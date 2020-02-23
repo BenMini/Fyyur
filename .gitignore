@@ -1,0 +1,13 @@
+# ignore virtual env
+venv/
+
+# ignore vscode settings
+.vscode/
+
+# ignore logfiles
+*.log
+
+# ignore pycache and ds_store
+__pycache__
+.DS_Store 
+fabfile.py
