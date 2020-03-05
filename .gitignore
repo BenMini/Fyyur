@@ -1,6 +1,6 @@
 # ignore virtual env
 venv/
-
+logs/
 # ignore vscode settings
 .vscode/
 
@@ -11,3 +11,4 @@ venv/
 __pycache__
 .DS_Store 
 fabfile.py
+app.db
