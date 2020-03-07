@@ -1,3 +1,6 @@
+#  ----------------------------------------------------------------
+# Imports
+#  ----------------------------------------------------------------
 import babel
 from flask import render_template, request, flash, redirect, \
     url_for, abort, jsonify
@@ -12,8 +15,6 @@ import sys
 # ----------------------------------------------------------------
 # Filters
 # ----------------------------------------------------------------
-
-
 def format_datetime(value, format='medium'):
     date = dateutil.parser.parse(value)
     if format == 'full':
@@ -25,6 +26,7 @@ def format_datetime(value, format='medium'):
 
 app.jinja_env.filters['datetime'] = format_datetime
 
+#  ----------------------------------------------------------------
 # Index Route
 # ----------------------------------------------------------------
 @app.route('/')
@@ -34,9 +36,6 @@ def index():
 #  ----------------------------------------------------------------
 #  Artists
 #  ----------------------------------------------------------------
-
-# Artist Index
-#  ----------------------------------------------------------------
 @app.route('/artists')
 def artists():
     '''shows list of artists in database'''
@@ -44,6 +43,7 @@ def artists():
     return render_template('pages/artists.html', artists=artists)
 
 
+#  ----------------------------------------------------------------
 # Artist Search
 #  ----------------------------------------------------------------
 @app.route('/artists/search', methods=['POST'])
@@ -51,9 +51,7 @@ def search_artists():
     '''search artists table using partial matches to strings'''
     # Get users search input
     search = request.form.get('search_term', '')
-    # Apply filter for artist name
     artists = Artist.query.filter(Artist.name.ilike(f"%{search}%")).all()
-    # Appending details of searched artist to response
     response = {
         "count": 0,
         "data": []
@@ -78,10 +76,9 @@ def search_artists():
     print('------ {0}'.format(request.form))
 
 
+#  ----------------------------------------------------------------
 # Artist Create
 #  ----------------------------------------------------------------
-
-
 @app.route('/artists/create', methods=['GET', 'POST'])
 def create_artist():
     '''create new artist'''
@@ -111,6 +108,7 @@ def create_artist():
             flash("Found errors: {}".format(form.errors))
     return render_template('forms/new_artist.html', form=form)
 
+#  ----------------------------------------------------------------
 # Artist Show
 #  ----------------------------------------------------------------
 @app.route('/artists/<int:artist_id>')
@@ -171,6 +169,7 @@ def show_artist(artist_id):
 
     return render_template('pages/show_artist.html', artist=data)
 
+#  ----------------------------------------------------------------
 # Artist Edit
 #  ----------------------------------------------------------------
 @app.route('/artists/<int:artist_id>/edit', methods=['GET', 'POST'])
@@ -208,7 +207,7 @@ def edit_artist(artist_id):
         form.image_link.data = artist.image_link
     return render_template('forms/edit_artist.html', form=form, artist=artist)
 
-
+#  ----------------------------------------------------------------
 # Artist Delete
 #  ----------------------------------------------------------------
 @app.route('/artists/<int:artist_id>', methods=['DELETE'])
@@ -235,19 +234,13 @@ def delete_artist(artist_id):
 #  ----------------------------------------------------------------
 #  Venues
 #  ----------------------------------------------------------------
-
-# Venue Index
-#  ----------------------------------------------------------------
 @app.route('/venues')
 def venues():
     '''Index of all venues'''
     # query all venues
-    # Getting list of states and cities
     venue_groups = db.session.query(Venue.city, Venue.state).group_by(
         Venue.city, Venue.state).all()
-    print(venue_groups)
     result = []
-    # Group venues by city and state
     for venue_group in venue_groups:
         city_name = venue_group[0]
         city_state = venue_group[1]
@@ -259,9 +252,8 @@ def venues():
             "venues": []
         }
         venues = filtered.all()
-        # List venues in the city/state group
+
         for venue in venues:
-            print(venue.id)
             if venue.city == group['city'] and venue.state == group['state']:
                 group['venues'].append({
                     "id": venue.id,
@@ -270,7 +262,7 @@ def venues():
         result.append(group)
     return render_template('pages/venues.html', areas=result)
 
-
+#  ----------------------------------------------------------------
 # Venue Search
 #  ----------------------------------------------------------------
 @app.route('/venues/search', methods=['POST'])
@@ -278,7 +270,6 @@ def search_venues():
     '''Search venues, using partial strings'''
     # Get users search input
     search = request.form.get('search_term', '')
-    # Apply filter for artist name
     venues = Venue.query.filter(Venue.name.ilike(f"%{search}%")).all()
     # Appending details of searched artist to response
     response = {
@@ -304,7 +295,7 @@ def search_venues():
     return render_template(
         'pages/search_venues.html', results=response, search_term=search)
 
-
+#  ----------------------------------------------------------------
 # Venue Create
 #  ----------------------------------------------------------------
 @app.route('/venues/create', methods=['GET', 'POST'])
@@ -335,22 +326,23 @@ def create_venue():
             flash("Found errors: {}".format(form.errors))
     return render_template('forms/new_venue.html', form=form)
 
+#  ----------------------------------------------------------------
 # Venue Show
 #  ----------------------------------------------------------------
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
     '''shows the venue page with the given venue_id'''
     # query first venue by id
-    # Retrieve all venues
+    # Get all venues
     venue = Venue.query.filter_by(id=venue_id).first()
 
-    # Retrive all shows for a particular venue
+    # Get all shows for a particular venue
     shows = Show.query.filter_by(venue_id=venue.id).all()
 
     # Return upcoming shows
     def upcoming_shows():
-        upcoming = []
         # If show is in future, add details
+        upcoming = []
         for show in shows:
             if show.start_time > datetime.now():
                 upcoming.append({
@@ -365,7 +357,6 @@ def show_venue(venue_id):
     def past_shows():
         past = []
 
-        # If show in past, add details
         for show in shows:
             if show.start_time <= datetime.now():
                 past.append({
@@ -398,6 +389,8 @@ def show_venue(venue_id):
 
     return render_template('pages/show_venue.html', venue=details)
 
+
+#  ----------------------------------------------------------------
 # Venue Edit
 #  ----------------------------------------------------------------
 @app.route('/venues/<int:venue_id>/edit', methods=['GET', 'POST'])
@@ -438,6 +431,7 @@ def edit_venue(venue_id):
     return render_template('forms/edit_venue.html', form=form, venue=venue)
 
 
+#  ----------------------------------------------------------------
 # Venue Delete
 #  ----------------------------------------------------------------
 @app.route('/venues/<venue_id>', methods=['DELETE'])
@@ -466,9 +460,6 @@ def delete_venue(venue_id):
 #  ----------------------------------------------------------------
 #  Shows
 #  ----------------------------------------------------------------
-
-# Shows Index
-#  ----------------------------------------------------------------
 @app.route('/shows')
 def shows():
     '''displays list of shows at /shows'''
@@ -488,7 +479,7 @@ def shows():
         })
     return render_template('pages/shows.html', shows=data)
 
-
+#  ----------------------------------------------------------------
 # Shows Create
 #  ----------------------------------------------------------------
 @app.route('/shows/create', methods=['GET', 'POST'])
