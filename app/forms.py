@@ -2,7 +2,7 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, \
     SelectMultipleField, DateTimeField, SubmitField, \
-    BooleanField
+    BooleanField, FieldList
 from wtforms.validators import DataRequired, URL
 
 
@@ -98,7 +98,7 @@ class VenueForm(FlaskForm):
     ])
     facebook_link = StringField('facebook_link', validators=[URL()])
     website = StringField('website')
-    seeking_talent = BooleanField
+    seeking_talent = BooleanField()
     seeking_description = StringField('seeking_description')
     submit = SubmitField('submit')
 

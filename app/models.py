@@ -7,7 +7,7 @@ class Venue(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
-    genres = db.Column(db.String())
+    genres = db.Column(db.String(120), nullable=True)
     address = db.Column(db.String(120))
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
@@ -28,7 +28,7 @@ class Artist(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), index=True)
-    genres = db.Column(db.String())
+    genres = db.Column(db.String(120), nullable=True)
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
     phone = db.Column(db.String(120))
@@ -49,7 +49,7 @@ class Show(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey(
         'Artist.id'), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
-    start_time = db.Column(db.DateTime, default=datetime.utcnow)
+    start_time = db.Column(db.DateTime, default=datetime.utcnow, index=True)
 
     def __repr__(self):
         return f'<Show: {self.artist_id} {self.venue_id} {self.start_time}>'

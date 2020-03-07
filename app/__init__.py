@@ -9,17 +9,20 @@ from logging.handlers import RotatingFileHandler
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+# from flask_wtf import CSRFProtect
 
 
 # ----------------------------------------------------------------------------#
 # App Config.
 # ----------------------------------------------------------------------------#
 
+# csrf = CSRFProtect()
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+# csrf.init_app(app)
 
 from app import routes, models
 
