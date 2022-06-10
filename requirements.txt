@@ -6,7 +6,7 @@ blinker==1.4
 certifi==2019.9.11
 chardet==3.0.4
 Click==7.0
-cookiecutter==1.6.0
+cookiecutter==2.1.1
 Flask==1.1.1
 Flask-DebugToolbar==0.10.1
 Flask-Migrate==2.5.2
